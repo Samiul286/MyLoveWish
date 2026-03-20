@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { MagicalDoor } from "@/components/magical-door"
 import { FloatingElements } from "@/components/floating-elements"
 import { SpecialEidWish } from "@/components/special-eid-wish"
@@ -9,13 +9,23 @@ export default function EidSurprisePage() {
   const [doorOpen, setDoorOpen] = useState(false)
   const [showContent, setShowContent] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
     setMounted(true)
+    if (typeof window !== "undefined") {
+      audioRef.current = new window.Audio('/eid-music2.mp3')
+      audioRef.current.loop = true
+    }
   }, [])
 
   const handleDoorClick = () => {
     setDoorOpen(true)
+    
+    if (audioRef.current) {
+      audioRef.current.play().catch((err) => console.log("Audio playback failed:", err))
+    }
+
     setTimeout(() => {
       setShowContent(true)
     }, 1500)
